@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Сидельников](https://up.htmlacademy.ru/javascript/10/user/293513).
-* Наставник: `Неизвестно`.
+* Наставник: [Юрий Катков](https://htmlacademy.ru/profile/id473867).
 
 ---
 
