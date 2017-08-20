@@ -205,8 +205,8 @@ function makeFragmentPinMap(object, element) {
   for (var i = 0; i < object.length; i++) {
     var newElement = document.createElement('div');
     newElement.classList.add('pin');
-    newElement.style.left = object[i].location.x + 'px';
-    newElement.style.top = object[i].location.y + 'px';
+    newElement.style.left = object[i].location.x + 20 + 'px';
+    newElement.style.top = object[i].location.y + 40 + 'px';
     newElement.innerHTML = '<img src="' + object[i].author.avatar + '" class="rounded" width="40" height="40">';
 
     element.appendChild(newElement);
