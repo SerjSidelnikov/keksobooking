@@ -182,22 +182,43 @@ var offers = [
 var pinMap = document.querySelector('.tokyo__pin-map');
 var fragment = document.createDocumentFragment();
 
-for (var i = 0; i < offers.length; i++) {
-  var newElement = document.createElement('div');
-  newElement.classList.add('pin');
-  newElement.style.left = offers[i].location.x + 'px';
-  newElement.style.top = offers[i].location.y + 'px';
-  newElement.innerHTML = '<img src="' + offers[i].author.avatar + '" class="rounded" width="40" height="40">';
-
-  fragment.appendChild(newElement);
-}
-
-pinMap.appendChild(fragment);
-
 var offerDialog = document.querySelector('#offer-dialog');
 var dialogPanelTemplate = document.getElementById('lodge-template').content;
 
-var renderDialogPanel = function (panel) {
+var dialogPanel = renderDialogPanel(offers[0]);
+var fragmentPanel = document.createDocumentFragment();
+
+makeFragmentPinMap(offers, fragment);
+pinMap.appendChild(fragment);
+
+fragmentPanel.appendChild(dialogPanel);
+offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
+
+document.querySelector('.dialog__title img').setAttribute('src', offers[0].author.avatar);
+
+/**
+ * Создаёт элемент отображающий маркер на карте
+ * @param {Object} object
+ * @param {Object} element
+ */
+function makeFragmentPinMap(object, element) {
+  for (var i = 0; i < object.length; i++) {
+    var newElement = document.createElement('div');
+    newElement.classList.add('pin');
+    newElement.style.left = object[i].location.x + 'px';
+    newElement.style.top = object[i].location.y + 'px';
+    newElement.innerHTML = '<img src="' + object[i].author.avatar + '" class="rounded" width="40" height="40">';
+
+    element.appendChild(newElement);
+  }
+}
+
+/**
+ * Создаёт элемент с описанием объявления
+ * @param {Object} panel
+ * @return {Object}
+ */
+function renderDialogPanel(panel) {
   var panelElement = dialogPanelTemplate.cloneNode(true);
   var typeLodging;
 
@@ -211,9 +232,9 @@ var renderDialogPanel = function (panel) {
 
   var fragmentFeatures = document.createDocumentFragment();
 
-  for (var j = 0; j < panel.offer.features.length; j++) {
+  for (var i = 0; i < panel.offer.features.length; i++) {
     var newFeatures = document.createElement('span');
-    newFeatures.className = 'feature__image feature__image--' + panel.offer.features[j];
+    newFeatures.className = 'feature__image feature__image--' + panel.offer.features[i];
 
     fragmentFeatures.appendChild(newFeatures);
   }
@@ -228,11 +249,4 @@ var renderDialogPanel = function (panel) {
   panelElement.querySelector('.lodge__description').textContent = panel.offer.description;
 
   return panelElement;
-};
-
-var fragmentPanel = document.createDocumentFragment();
-fragmentPanel.appendChild(renderDialogPanel(offers[0]));
-
-offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
-
-document.querySelector('.dialog__title img').setAttribute('src', offers[0].author.avatar);
+}
