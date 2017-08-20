@@ -10,13 +10,15 @@ var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var times = ['12:00', '13:00', '14:00'];
 
 for (var i = 1; i <= 8; i++) {
+  var locationX = generateRandomNumber(300, 900);
+  var locationY = generateRandomNumber(100, 500);
   offers.push({
     author: {
       avatar: 'img/avatars/user0' + i + '.png'
     },
     offer: {
       title: titles[i - 1],
-      address: location.x + ' ' + location.y,
+      address: locationX + ', ' + locationY,
       price: generateRandomNumber(1000, 1000000),
       type: types[generateRandomNumber(0, 2)],
       rooms: generateRandomNumber(1, 5),
@@ -28,8 +30,8 @@ for (var i = 1; i <= 8; i++) {
       photos: []
     },
     location: {
-      x: generateRandomNumber(300, 900),
-      y: generateRandomNumber(100, 500),
+      x: locationX,
+      y: locationY
     }
   });
 }
@@ -59,13 +61,20 @@ document.querySelector('.dialog__title img').setAttribute('src', offers[0].autho
 function makeFragmentPinMap(object, element) {
   for (var k = 0; k < object.length; k++) {
     var newElement = document.createElement('div');
+    var imgElement = document.createElement('img');
     var imageWidth = 40;
     var imageHeight = 40;
+
     newElement.classList.add('pin');
     newElement.style.left = object[k].location.x + imageWidth / 2 + 'px';
     newElement.style.top = object[k].location.y + imageHeight + 'px';
-    newElement.innerHTML = '<img src="' + object[k].author.avatar + '" class="rounded" width="40" height="40">';
 
+    imgElement.classList.add('rounded');
+    imgElement.style.width = '40px';
+    imgElement.style.height = '40px';
+    imgElement.setAttribute('src', object[k].author.avatar);
+
+    newElement.appendChild(imgElement);
     element.appendChild(newElement);
   }
 }
