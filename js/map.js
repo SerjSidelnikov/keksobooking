@@ -1,183 +1,38 @@
 'use strict';
 
-var offers = [
-  {
+var offers = [];
+var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+
+var types = ['flat', 'house', 'bungalo'];
+
+var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+
+var times = ['12:00', '13:00', '14:00'];
+
+for (var i = 1; i <= 8; i++) {
+  offers.push({
     author: {
-      avatar: 'img/avatars/user01.png'
+      avatar: 'img/avatars/user0' + i + '.png'
     },
     offer: {
-      title: 'Большая уютная квартира',
+      title: titles[i - 1],
       address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'flat',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '12:00',
-      checkout: '12:00',
-      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
+      price: generateRandomNumber(1000, 1000000),
+      type: types[generateRandomNumber(0, 2)],
+      rooms: generateRandomNumber(1, 5),
+      guests: generateRandomNumber(1, 10),
+      checkin: times[generateRandomNumber(0, 2)],
+      checkout: times[generateRandomNumber(0, 2)],
+      features: features.slice(0, generateRandomNumber(1, 5)),
       description: '',
       photos: []
     },
     location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
+      x: generateRandomNumber(300, 900),
+      y: generateRandomNumber(100, 500),
     }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user02.png'
-    },
-    offer: {
-      title: 'Маленькая неуютная квартира',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'flat',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '13:00',
-      checkout: '13:00',
-      features: ['wifi', 'dishwasher', 'washer', 'elevator'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user03.png'
-    },
-    offer: {
-      title: 'Огромный прекрасный дворец',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'house',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '13:00',
-      checkout: '13:00',
-      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user04.png'
-    },
-    offer: {
-      title: 'Маленький ужасный дворец',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'flat',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '14:00',
-      checkout: '14:00',
-      features: ['wifi', 'dishwasher', 'washer'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user05.png'
-    },
-    offer: {
-      title: 'Красивый гостевой домик',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'house',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '14:00',
-      checkout: '14:00',
-      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user06.png'
-    },
-    offer: {
-      title: 'Некрасивый негостеприимный домик',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'bungalo',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '14:00',
-      checkout: '14:00',
-      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user07.png'
-    },
-    offer: {
-      title: 'Уютное бунгало далеко от моря',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'bungalo',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '14:00',
-      checkout: '14:00',
-      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  },
-  {
-    author: {
-      avatar: 'img/avatars/user08.png'
-    },
-    offer: {
-      title: 'Неуютное бунгало по колено в воде',
-      address: location.x + ' ' + location.y,
-      price: Math.floor(1000 + Math.random() * (1000000 + 1 - 1000)),
-      type: 'bungalo',
-      rooms: Math.floor(1 + Math.random() * (5 + 1 - 1)),
-      guests: Math.floor(1 + Math.random() * (10 + 1 - 1)),
-      checkin: '14:00',
-      checkout: '14:00',
-      features: ['wifi', 'dishwasher', 'washer'],
-      description: '',
-      photos: []
-    },
-    location: {
-      x: Math.floor(300 + Math.random() * (900 + 1 - 300)),
-      y: Math.floor(100 + Math.random() * (500 + 1 - 100)),
-    }
-  }
-];
+  });
+}
 
 var pinMap = document.querySelector('.tokyo__pin-map');
 var fragment = document.createDocumentFragment();
@@ -202,12 +57,14 @@ document.querySelector('.dialog__title img').setAttribute('src', offers[0].autho
  * @param {Object} element
  */
 function makeFragmentPinMap(object, element) {
-  for (var i = 0; i < object.length; i++) {
+  for (var k = 0; k < object.length; k++) {
     var newElement = document.createElement('div');
+    var imageWidth = 40;
+    var imageHeight = 40;
     newElement.classList.add('pin');
-    newElement.style.left = object[i].location.x + 20 + 'px';
-    newElement.style.top = object[i].location.y + 40 + 'px';
-    newElement.innerHTML = '<img src="' + object[i].author.avatar + '" class="rounded" width="40" height="40">';
+    newElement.style.left = object[k].location.x + imageWidth / 2 + 'px';
+    newElement.style.top = object[k].location.y + imageHeight + 'px';
+    newElement.innerHTML = '<img src="' + object[k].author.avatar + '" class="rounded" width="40" height="40">';
 
     element.appendChild(newElement);
   }
@@ -232,9 +89,9 @@ function renderDialogPanel(panel) {
 
   var fragmentFeatures = document.createDocumentFragment();
 
-  for (var i = 0; i < panel.offer.features.length; i++) {
+  for (var j = 0; j < panel.offer.features.length; j++) {
     var newFeatures = document.createElement('span');
-    newFeatures.className = 'feature__image feature__image--' + panel.offer.features[i];
+    newFeatures.className = 'feature__image feature__image--' + panel.offer.features[j];
 
     fragmentFeatures.appendChild(newFeatures);
   }
@@ -249,4 +106,14 @@ function renderDialogPanel(panel) {
   panelElement.querySelector('.lodge__description').textContent = panel.offer.description;
 
   return panelElement;
+}
+
+/**
+ * Возвращает случайное число от min до max
+ * @param {number} min
+ * @param {number} max
+ * @return {number}
+ */
+function generateRandomNumber(min, max) {
+  return Math.floor(min + Math.random() * (max + 1 - min));
 }
