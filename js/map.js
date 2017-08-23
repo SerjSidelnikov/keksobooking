@@ -126,3 +126,21 @@ function renderDialogPanel(panel) {
 function generateRandomNumber(min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 }
+
+var pins = pinMap.querySelectorAll('.pin');
+
+pinMap.addEventListener('click', function (event) {
+  var target = event.target;
+
+  for (var l = 0; l < pins.length; l++) {
+    pins[l].classList.remove('pin--active');
+  }
+
+  while (target !== pinMap) {
+    if (target.classList.contains('pin')) {
+      target.classList.add('pin--active');
+    }
+
+    target = target.parentNode;
+  }
+});
