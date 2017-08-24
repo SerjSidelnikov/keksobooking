@@ -42,16 +42,8 @@ var fragment = document.createDocumentFragment();
 var offerDialog = document.querySelector('#offer-dialog');
 var dialogPanelTemplate = document.getElementById('lodge-template').content;
 
-var dialogPanel = renderDialogPanel(offers[0]);
-var fragmentPanel = document.createDocumentFragment();
-
 makeFragmentPinMap(offers, fragment);
 pinMap.appendChild(fragment);
-
-fragmentPanel.appendChild(dialogPanel);
-offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
-
-document.querySelector('.dialog__title img').setAttribute('src', offers[0].author.avatar);
 
 /**
  * Создаёт элемент отображающий маркер на карте
@@ -128,9 +120,13 @@ function generateRandomNumber(min, max) {
 }
 
 var pins = pinMap.querySelectorAll('.pin');
+var dialogPanel;
+var fragmentPanel;
+var myDialog = offerDialog.children[1].cloneNode(true);
 
 pinMap.addEventListener('click', function (event) {
   var target = event.target;
+  var targetImage;
 
   for (var l = 0; l < pins.length; l++) {
     pins[l].classList.remove('pin--active');
@@ -139,8 +135,26 @@ pinMap.addEventListener('click', function (event) {
   while (target !== pinMap) {
     if (target.classList.contains('pin')) {
       target.classList.add('pin--active');
+      targetImage = target.children[0].getAttribute('src');
     }
 
     target = target.parentNode;
+  }
+
+  for (var x = 0; x < pins.length; x++) {
+    if (pins[x].classList.contains('pin--active')) {
+      if (x === 0) {
+        fragmentPanel = document.createDocumentFragment();
+        fragmentPanel.appendChild(myDialog);
+        offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
+        document.querySelector('.dialog__title img').setAttribute('src', 'img/avatars/user01.png');
+      } else {
+        dialogPanel = renderDialogPanel(offers[x - 1]);
+        fragmentPanel = document.createDocumentFragment();
+        fragmentPanel.appendChild(dialogPanel);
+        offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
+        document.querySelector('.dialog__title img').setAttribute('src', targetImage);
+      }
+    }
   }
 });
