@@ -1,5 +1,10 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
+var dialogClose = document.querySelector('.dialog__close');
+
 var offers = [];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 
@@ -58,6 +63,7 @@ function makeFragmentPinMap(object, element) {
     var imageHeight = 40;
 
     newElement.classList.add('pin');
+    newElement.setAttribute('tabindex', '0');
     newElement.style.left = object[k].location.x + imageWidth / 2 + 'px';
     newElement.style.top = object[k].location.y + imageHeight + 'px';
 
