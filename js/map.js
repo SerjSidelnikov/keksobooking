@@ -3,17 +3,51 @@
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
-var dialogClose = document.querySelector('.dialog__close');
-
 var offers = [];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-
 var types = ['flat', 'house', 'bungalo'];
-
 var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-
 var times = ['12:00', '13:00', '14:00'];
 
+var offerDialog = document.querySelector('#offer-dialog');
+var dialogClose = offerDialog.querySelector('.dialog__close');
+var pinMap = document.querySelector('.tokyo__pin-map');
+var dialogPanelTemplate = document.getElementById('lodge-template').content;
+var dialogPanel;
+var fragmentPanel;
+
+var myDialog = offerDialog.children[1].cloneNode(true);
+
+var onDialogEscPress = function (event) {
+  if (event.keyCode === ESC_KEYCODE) {
+    closeDialog();
+  }
+};
+
+var onDialogEnterPress = function (event) {
+  if (event.keyCode === ENTER_KEYCODE) {
+    showActiveDialog();
+  }
+};
+
+var openDialog = function () {
+  offerDialog.classList.remove('hidden');
+  document.addEventListener('keydown', onDialogEscPress);
+  dialogClose.addEventListener('click', closeDialog);
+};
+
+var closeDialog = function () {
+  offerDialog.classList.add('hidden');
+
+  for (var i = 0; i < pins.length; i++) {
+    pins[i].classList.remove('pin--active');
+  }
+
+  document.removeEventListener('keydown', onDialogEscPress);
+  dialogClose.removeEventListener('click', closeDialog);
+};
+
+// Заполнение массива offers
 for (var i = 1; i <= 8; i++) {
   var locationX = generateRandomNumber(300, 900);
   var locationY = generateRandomNumber(100, 500);
@@ -41,14 +75,55 @@ for (var i = 1; i <= 8; i++) {
   });
 }
 
-var pinMap = document.querySelector('.tokyo__pin-map');
+// Отображаем маркеры на карте
 var fragment = document.createDocumentFragment();
-
-var offerDialog = document.querySelector('#offer-dialog');
-var dialogPanelTemplate = document.getElementById('lodge-template').content;
-
 makeFragmentPinMap(offers, fragment);
 pinMap.appendChild(fragment);
+
+var pins = pinMap.querySelectorAll('.pin');
+
+pinMap.addEventListener('click', showActiveDialog);
+pinMap.addEventListener('keydown', showActiveDialog); // если сюда поставить onDialogEnterPress, то будет ошибка event undefined, а так открывает объявление любой кнопкой. Не знаю как решить.
+
+/**
+ * Показывает активное объявление
+ * @param {object} event
+ */
+function showActiveDialog(event) {
+  var target = event.target;
+  var targetImage;
+
+  for (var j = 0; j < pins.length; j++) {
+    pins[j].classList.remove('pin--active');
+  }
+
+  while (target !== pinMap) {
+    if (target.classList.contains('pin')) {
+      target.classList.add('pin--active');
+      targetImage = target.children[0].getAttribute('src');
+      openDialog();
+    }
+
+    target = target.parentNode;
+  }
+
+  for (var x = 0; x < pins.length; x++) {
+    if (pins[x].classList.contains('pin--active')) {
+      if (x === 0) {
+        fragmentPanel = document.createDocumentFragment();
+        fragmentPanel.appendChild(myDialog);
+        offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
+        document.querySelector('.dialog__title img').setAttribute('src', 'img/avatars/user01.png');
+      } else {
+        dialogPanel = renderDialogPanel(offers[x - 1]);
+        fragmentPanel = document.createDocumentFragment();
+        fragmentPanel.appendChild(dialogPanel);
+        offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
+        document.querySelector('.dialog__title img').setAttribute('src', targetImage);
+      }
+    }
+  }
+}
 
 /**
  * Создаёт элемент отображающий маркер на карте
@@ -124,43 +199,3 @@ function renderDialogPanel(panel) {
 function generateRandomNumber(min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 }
-
-var pins = pinMap.querySelectorAll('.pin');
-var dialogPanel;
-var fragmentPanel;
-var myDialog = offerDialog.children[1].cloneNode(true);
-
-pinMap.addEventListener('click', function (event) {
-  var target = event.target;
-  var targetImage;
-
-  for (var l = 0; l < pins.length; l++) {
-    pins[l].classList.remove('pin--active');
-  }
-
-  while (target !== pinMap) {
-    if (target.classList.contains('pin')) {
-      target.classList.add('pin--active');
-      targetImage = target.children[0].getAttribute('src');
-    }
-
-    target = target.parentNode;
-  }
-
-  for (var x = 0; x < pins.length; x++) {
-    if (pins[x].classList.contains('pin--active')) {
-      if (x === 0) {
-        fragmentPanel = document.createDocumentFragment();
-        fragmentPanel.appendChild(myDialog);
-        offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
-        document.querySelector('.dialog__title img').setAttribute('src', 'img/avatars/user01.png');
-      } else {
-        dialogPanel = renderDialogPanel(offers[x - 1]);
-        fragmentPanel = document.createDocumentFragment();
-        fragmentPanel.appendChild(dialogPanel);
-        offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
-        document.querySelector('.dialog__title img').setAttribute('src', targetImage);
-      }
-    }
-  }
-});
