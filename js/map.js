@@ -83,7 +83,7 @@ pinMap.appendChild(fragment);
 var pins = pinMap.querySelectorAll('.pin');
 
 pinMap.addEventListener('click', showActiveDialog);
-pinMap.addEventListener('keydown', showActiveDialog); // если сюда поставить onDialogEnterPress, то будет ошибка event undefined, а так открывает объявление любой кнопкой. Не знаю как решить.
+pinMap.addEventListener('keydown', onDialogEnterPress); // если сюда поставить onDialogEnterPress, то будет ошибка event undefined, а так открывает объявление любой кнопкой. Не знаю как решить.
 
 /**
  * Показывает активное объявление
