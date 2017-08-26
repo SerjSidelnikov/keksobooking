@@ -18,24 +18,38 @@ var fragmentPanel;
 
 var myDialog = offerDialog.children[1].cloneNode(true);
 
+/**
+ * Вызывает функцию закрытия объявления по нажатию esc
+ * @param {Object} event
+ */
 var onDialogEscPress = function (event) {
   if (event.keyCode === ESC_KEYCODE) {
     closeDialog();
   }
 };
 
+/**
+ * Вызывает функцию показа объявления по нажатию enter
+ * @param {Object} event
+ */
 var onDialogEnterPress = function (event) {
   if (event.keyCode === ENTER_KEYCODE) {
-    showActiveDialog();
+    showActiveDialog(event.target);
   }
 };
 
+/**
+ * Открывает объявление и добавляет обработчики событий на esc и click
+ */
 var openDialog = function () {
   offerDialog.classList.remove('hidden');
   document.addEventListener('keydown', onDialogEscPress);
   dialogClose.addEventListener('click', closeDialog);
 };
 
+/**
+ * Закрывает объявление, удаляет у маркера состояние активности и удаляет обработчики событий на esc и click
+ */
 var closeDialog = function () {
   offerDialog.classList.add('hidden');
 
@@ -83,14 +97,14 @@ pinMap.appendChild(fragment);
 var pins = pinMap.querySelectorAll('.pin');
 
 pinMap.addEventListener('click', showActiveDialog);
-pinMap.addEventListener('keydown', onDialogEnterPress); // если сюда поставить onDialogEnterPress, то будет ошибка event undefined, а так открывает объявление любой кнопкой. Не знаю как решить.
+pinMap.addEventListener('keydown', onDialogEnterPress);
 
 /**
  * Показывает активное объявление
  * @param {object} event
  */
 function showActiveDialog(event) {
-  var target = event.target;
+  var target = (event.target) ? event.target : event;
   var targetImage;
 
   for (var j = 0; j < pins.length; j++) {
