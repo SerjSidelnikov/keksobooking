@@ -339,18 +339,18 @@ titleInput.addEventListener('invalid', function () {
 // Если заголовок объявления не валиден - обводится красной рамкой
 titleInput.addEventListener('blur', function () {
   if (!titleInput.validity.valid) {
-    titleInput.style.border = '1px solid red';
+    titleInput.classList.add('error');
   } else {
-    titleInput.style.border = '1px solid #d9d9d3';
+    titleInput.classList.remove('error');
   }
 });
 
 // Если адрес не валиден - обводится красной рамкой
 addressInput.addEventListener('blur', function () {
   if (!addressInput.validity.valid) {
-    addressInput.style.border = '1px solid red';
+    addressInput.classList.add('error');
   } else {
-    addressInput.style.border = '1px solid #d9d9d3';
+    addressInput.classList.remove('error');
   }
 });
 

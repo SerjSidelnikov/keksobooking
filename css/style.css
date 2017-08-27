@@ -79,6 +79,10 @@ input[type=text]:valid:focus, input[type=number]:valid:focus {
   box-shadow: 0 0 4px 1px #21DE35;
 }
 
+input[type=text].error {
+  border: 1px solid red;
+}
+
 select {
     text-indent: 10px;
 }
