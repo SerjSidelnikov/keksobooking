@@ -127,8 +127,8 @@ function showActiveDialog(event) {
 }
 
 /**
- * Срздаёт активное объявление
- * @param {Object} targetImage
+ * Создаёт активное объявление
+ * @param {string} targetImage
  */
 function renderActiveDialogPanel(targetImage) {
   for (var x = 0; x < pins.length; x++) {
