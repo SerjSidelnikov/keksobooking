@@ -96,12 +96,13 @@ pinMap.appendChild(fragment);
 
 var pins = pinMap.querySelectorAll('.pin');
 
+// отслеживаем click на карте и по event.target определяем на каком элементе произошло событие
 pinMap.addEventListener('click', showActiveDialog);
 pinMap.addEventListener('keydown', onDialogEnterPress);
 
 /**
  * Показывает активное объявление
- * @param {object} event
+ * @param {Object} event
  */
 function showActiveDialog(event) {
   var target = (event.target) ? event.target : event;
@@ -111,19 +112,28 @@ function showActiveDialog(event) {
     pins[j].classList.remove('pin--active');
   }
 
+  // цикл двигается вверх от target к родителям до pinMap
   while (target !== pinMap) {
-    if (target.classList.contains('pin')) {
+    if (target.classList.contains('pin')) { // элемент, который нас интересует
       target.classList.add('pin--active');
       targetImage = target.children[0].getAttribute('src');
       openDialog();
     }
-
+    // если клик был не на нашем элементе, то двигаемся вверх по иерархии родителей
     target = target.parentNode;
   }
 
+  renderActiveDialogPanel(targetImage);
+}
+
+/**
+ * Срздаёт активное объявление
+ * @param {Object} targetImage
+ */
+function renderActiveDialogPanel(targetImage) {
   for (var x = 0; x < pins.length; x++) {
     if (pins[x].classList.contains('pin--active')) {
-      if (x === 0) {
+      if (pins[x].classList.contains('pin__main')) {
         fragmentPanel = document.createDocumentFragment();
         fragmentPanel.appendChild(myDialog);
         offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
