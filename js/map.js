@@ -226,14 +226,15 @@ function generateRandomNumber(min, max) {
 
 // Валидация формы ==========================================================================================
 var form = document.querySelector('.notice__form');
-var addressInput = form.elements.address;
-var priceInput = form.elements.price;
-var titleInput = form.elements.title;
-var timeinSelect = form.elements.timein;
-var timeoutSelect = form.elements.timeout;
-var typeSelect = form.elements.type;
-var roomsSelect = form.elements.rooms;
-var capacitySelect = form.elements.capacity;
+var elem = form.elements;
+var addressInput = elem.address;
+var priceInput = elem.price;
+var titleInput = elem.title;
+var timeinSelect = elem.timein;
+var timeoutSelect = elem.timeout;
+var typeSelect = elem.type;
+var roomsSelect = elem.rooms;
+var capacitySelect = elem.capacity;
 
 // Изменяет время выезда в зависимости от времени заезда
 timeinSelect.addEventListener('change', function () {
