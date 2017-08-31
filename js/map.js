@@ -97,6 +97,7 @@
           fragmentPanel.appendChild(myDialog);
           offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);
           document.querySelector('.dialog__title img').setAttribute('src', 'img/avatars/user01.png');
+          myDialog = offerDialog.children[1].cloneNode(true);
         } else {
           dialogPanel = window.card.renderDialogPanel(window.data.offers[x - 1]);
           fragmentPanel = document.createDocumentFragment();
