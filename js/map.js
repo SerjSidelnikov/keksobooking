@@ -5,12 +5,19 @@
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
 
+  var offers = window.data.generateOffers();
   var dialogPanel;
   var fragmentPanel;
   var offerDialog = document.querySelector('#offer-dialog');
   var dialogClose = offerDialog.querySelector('.dialog__close');
   var myDialog = offerDialog.children[1].cloneNode(true);
-  var pins = window.pin.pinMap.querySelectorAll('.pin');
+  var pinMap = document.querySelector('.tokyo__pin-map');
+  var pins = pinMap.querySelectorAll('.pin');
+
+  // Отображаем маркеры на карте
+  var fragment = document.createDocumentFragment();
+  window.pin.makeFragmentPinMap(offers, fragment);
+  pinMap.appendChild(fragment);
 
   /**
    * Вызывает функцию закрытия объявления по нажатию esc
@@ -56,8 +63,8 @@
   };
 
   // отслеживаем click на карте и по event.target определяем на каком элементе произошло событие
-  window.pin.pinMap.addEventListener('click', showActiveDialog);
-  window.pin.pinMap.addEventListener('keydown', onDialogEnterPress);
+  pinMap.addEventListener('click', showActiveDialog);
+  pinMap.addEventListener('keydown', onDialogEnterPress);
 
   /**
    * Показывает активное объявление
@@ -72,7 +79,7 @@
     }
 
     // цикл двигается вверх от target к родителям до pinMap
-    while (target !== window.pin.pinMap) {
+    while (target !== pinMap) {
       if (target.classList.contains('pin')) { // элемент, который нас интересует
         target.classList.add('pin--active');
         targetImage = target.children[0].getAttribute('src');
@@ -99,7 +106,7 @@
           document.querySelector('.dialog__title img').setAttribute('src', 'img/avatars/user01.png');
           myDialog = offerDialog.children[1].cloneNode(true);
         } else {
-          dialogPanel = window.card.renderDialogPanel(window.data.offers[x - 1]);
+          dialogPanel = window.card.renderDialogPanel(offers[x - 1]);
           fragmentPanel = document.createDocumentFragment();
           fragmentPanel.appendChild(dialogPanel);
           offerDialog.replaceChild(fragmentPanel, offerDialog.children[1]);

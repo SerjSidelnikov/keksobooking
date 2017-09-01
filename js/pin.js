@@ -2,13 +2,6 @@
 
 (function () {
 
-  var pinMap = document.querySelector('.tokyo__pin-map');
-
-  // Отображаем маркеры на карте
-  var fragment = document.createDocumentFragment();
-  makeFragmentPinMap(window.data.offers, fragment);
-  pinMap.appendChild(fragment);
-
   /**
    * Создаёт элемент отображающий маркер на карте
    * @param {Object} object
@@ -37,7 +30,7 @@
   }
 
   window.pin = {
-    pinMap: pinMap
+    makeFragmentPinMap: makeFragmentPinMap
   };
 
 })();

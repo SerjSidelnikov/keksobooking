@@ -7,32 +7,36 @@
   var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var times = ['12:00', '13:00', '14:00'];
 
-  // Заполнение массива offers
-  for (var i = 1; i <= 8; i++) {
-    var locationX = generateRandomNumber(300, 900);
-    var locationY = generateRandomNumber(100, 500);
-    offers.push({
-      author: {
-        avatar: 'img/avatars/user0' + i + '.png'
-      },
-      offer: {
-        title: titles[i - 1],
-        address: locationX + ', ' + locationY,
-        price: generateRandomNumber(1000, 1000000),
-        type: types[generateRandomNumber(0, 2)],
-        rooms: generateRandomNumber(1, 5),
-        guests: generateRandomNumber(1, 10),
-        checkin: times[generateRandomNumber(0, 2)],
-        checkout: times[generateRandomNumber(0, 2)],
-        features: features.slice(0, generateRandomNumber(1, 5)),
-        description: '',
-        photos: []
-      },
-      location: {
-        x: locationX,
-        y: locationY
-      }
-    });
+  /**
+   * Заполняет массив offers данными
+   */
+  function generateOffers() {
+    for (var i = 1; i <= 8; i++) {
+      var locationX = generateRandomNumber(300, 900);
+      var locationY = generateRandomNumber(100, 500);
+      offers.push({
+        author: {
+          avatar: 'img/avatars/user0' + i + '.png'
+        },
+        offer: {
+          title: titles[i - 1],
+          address: locationX + ', ' + locationY,
+          price: generateRandomNumber(1000, 1000000),
+          type: types[generateRandomNumber(0, 2)],
+          rooms: generateRandomNumber(1, 5),
+          guests: generateRandomNumber(1, 10),
+          checkin: times[generateRandomNumber(0, 2)],
+          checkout: times[generateRandomNumber(0, 2)],
+          features: features.slice(0, generateRandomNumber(1, 5)),
+          description: '',
+          photos: []
+        },
+        location: {
+          x: locationX,
+          y: locationY
+        }
+      });
+    }
   }
 
   /**
@@ -46,7 +50,7 @@
   }
 
   window.data = {
-    offers: offers
+    generateOffers: generateOffers
   };
 
 })();
