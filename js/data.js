@@ -9,6 +9,7 @@
 
   /**
    * Заполняет массив offers данными
+   * @return {Array}
    */
   function generateOffers() {
     for (var i = 1; i <= 8; i++) {
@@ -37,6 +38,8 @@
         }
       });
     }
+
+    return offers;
   }
 
   /**
