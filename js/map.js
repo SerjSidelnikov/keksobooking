@@ -22,16 +22,44 @@
   var pinMain = pinMap.querySelector('.pin__main');
   var map = document.querySelector('.tokyo');
   var addressInput = document.getElementById('address');
+  var widthPinMain = 76;
+  var heightPinMain = 94;
+  var widthMap = 1200;
+  var heightMap = 700;
+  var topPointMap = 180;
 
   pinMain.addEventListener('mousedown', movePin);
+  addressInput.addEventListener('change', changeAddressInput);
 
-  // Изменение положения пина при вводе координат в поле адрес
-  addressInput.addEventListener('change', function () {
+  /**
+   * Изменение положения пина при вводе координат в поле адрес
+   */
+  function changeAddressInput() {
     var valueAddressInput = addressInput.value.split(' ');
+    var top = valueAddressInput[3];
+    var left = valueAddressInput[1].slice(0, -1);
 
-    pinMain.style.top = valueAddressInput[3] + 'px';
-    pinMain.style.left = valueAddressInput[1].slice(0, -1) + 'px';
-  });
+    if (left > widthMap) {
+      left = widthMap;
+    }
+
+    if (left < -widthPinMain / 2) {
+      left = 0;
+    }
+
+    if (top < topPointMap - heightPinMain) {
+      top = topPointMap;
+    }
+
+    if (top > heightMap) {
+      top = heightMap;
+    }
+
+    pinMain.style.top = top - heightPinMain + 'px';
+    pinMain.style.left = left - widthPinMain / 2 + 'px';
+
+    addressInput.value = 'x: ' + left + ', y: ' + top;
+  }
 
   /**
    * Перемещение пина заполняемого объявдения
@@ -39,12 +67,6 @@
    */
   function movePin(event) {
     event.preventDefault();
-
-    var widthPinMain = 76;
-    var heightPinMain = 94;
-    var widthMap = 1200;
-    var heightMap = 700;
-    var topPointMap = 180;
 
     var startCoords = {
       x: event.clientX,
