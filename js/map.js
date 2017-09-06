@@ -27,6 +27,7 @@
   var widthMap = 1200;
   var heightMap = 700;
   var topPointMap = 180;
+  var regex = /x: (\d{1,4}), y: (\d{1,3})/;
 
   pinMain.addEventListener('mousedown', movePin);
   addressInput.addEventListener('change', changeAddressInput);
@@ -35,30 +36,40 @@
    * Изменение положения пина при вводе координат в поле адрес
    */
   function changeAddressInput() {
-    var valueAddressInput = addressInput.value.split(' ');
-    var top = valueAddressInput[3];
-    var left = valueAddressInput[1].slice(0, -1);
+    var valueAddressInput = addressInput.value;
 
-    if (left > widthMap) {
-      left = widthMap;
+    if (formatIsValid(valueAddressInput, regex)) {
+      var match = regex.exec(valueAddressInput);
+      var top = match[2];
+      var left = match[1];
+
+      if (left > widthMap - widthPinMain) {
+        left = widthMap;
+      }
+
+      if (left < -widthPinMain / 2) {
+        left = 0;
+      }
+
+      if (top < topPointMap - heightPinMain) {
+        top = topPointMap;
+      }
+
+      if (top > heightMap) {
+        top = heightMap;
+      }
+
+      pinMain.style.top = top - heightPinMain + 'px';
+      pinMain.style.left = left - widthPinMain / 2 + 'px';
+
+      addressInput.value = 'x: ' + left + ', y: ' + top;
+    } else {
+      addressInput.value = '';
     }
+  }
 
-    if (left < -widthPinMain / 2) {
-      left = 0;
-    }
-
-    if (top < topPointMap - heightPinMain) {
-      top = topPointMap;
-    }
-
-    if (top > heightMap) {
-      top = heightMap;
-    }
-
-    pinMain.style.top = top - heightPinMain + 'px';
-    pinMain.style.left = left - widthPinMain / 2 + 'px';
-
-    addressInput.value = 'x: ' + left + ', y: ' + top;
+  function formatIsValid(str, reg) {
+    return reg.test(str);
   }
 
   /**
@@ -95,7 +106,7 @@
     var onMouseUp = function (upEvent) {
       upEvent.preventDefault();
 
-      if (parseInt(pinMain.style.left, 10) > widthMap) {
+      if (parseInt(pinMain.style.left, 10) > widthMap - widthPinMain / 2) {
         pinMain.style.left = (widthMap - widthPinMain / 2) + 'px';
       }
 
@@ -107,7 +118,7 @@
         pinMain.style.top = (topPointMap - heightPinMain) + 'px';
       }
 
-      if (parseInt(pinMain.style.top, 10) > heightMap) {
+      if (parseInt(pinMain.style.top, 10) > heightMap - heightPinMain) {
         pinMain.style.top = (heightMap - heightPinMain) + 'px';
       }
 

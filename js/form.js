@@ -92,7 +92,7 @@
   // Проверка поля адреса на валидность
   addressInput.addEventListener('invalid', function () {
     if (!addressInput.validity.valid) {
-      addressInput.setCustomValidity('Обязательное поле');
+      addressInput.setCustomValidity('Введите в формате x: число, y: число');
     } else {
       addressInput.setCustomValidity('');
     }
