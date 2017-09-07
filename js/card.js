@@ -23,9 +23,9 @@
 
     var fragmentFeatures = document.createDocumentFragment();
 
-    for (var j = 0; j < panel.offer.features.length; j++) {
+    for (var i = 0; i < panel.offer.features.length; i++) {
       var newFeatures = document.createElement('span');
-      newFeatures.className = 'feature__image feature__image--' + panel.offer.features[j];
+      newFeatures.className = 'feature__image feature__image--' + panel.offer.features[i];
 
       fragmentFeatures.appendChild(newFeatures);
     }
