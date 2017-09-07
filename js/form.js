@@ -13,81 +13,54 @@
   var roomsSelect = elem.rooms;
   var capacitySelect = elem.capacity;
 
-  // Изменяет время выезда в зависимости от времени заезда
-  timeinSelect.addEventListener('change', function () {
-    for (var x = 0; x < timeinSelect.options.length; x++) {
-      var option = timeinSelect.options[x];
-      if (option.selected) {
-        timeoutSelect.options[x].selected = true;
-      }
-    }
-  });
+  var timeinSelectOptions = timeinSelect.options;
+  var timeoutSelectOptions = timeoutSelect.options;
 
-  // Изменяет время заезда в зависимости от времени выезда
-  timeoutSelect.addEventListener('change', function () {
-    for (var x = 0; x < timeoutSelect.options.length; x++) {
-      var option = timeoutSelect.options[x];
-      if (option.selected) {
-        timeinSelect.options[x].selected = true;
+  var typeSelectOptions = typeSelect.options;
+  var minPrice = [1000, 0, 5000, 10000];
+
+  var roomsSelectOptions = roomsSelect.options;
+  var capacitySelectOptions = capacitySelect.options;
+
+  var syncValueTime = function (element) {
+    element.selected = true;
+  };
+
+  var syncValueType = function (element, value) {
+    element.value = value;
+    element.setAttribute('min', value);
+  };
+
+  var syncValueRooms = function (element, value) {
+    if (!(~element.text.indexOf('комнат'))) {
+      if (value === '1') {
+        capacitySelect.options[2].selected = true;
+      } else if (value === '2') {
+        capacitySelect.options[1].selected = true;
+      } else if (value === '3') {
+        capacitySelect.options[0].selected = true;
+      } else {
+        capacitySelect.options[3].selected = true;
+      }
+    } else {
+      if (value === '2' && element.value < '2') {
+        roomsSelect.options[1].selected = true;
+      } else if (value === '3' && element.value < '3') {
+        roomsSelect.options[2].selected = true;
+      } else if (value === '0') {
+        roomsSelect.options[3].selected = true;
       }
     }
-  });
+  };
+
+  // Изменяет время выезда в зависимости от времени заезда и наоборот
+  window.synchronizeFields(timeinSelect, timeoutSelect, timeinSelectOptions, timeoutSelectOptions, syncValueTime);
 
   // Устанавливает минимальное значение цены в зависимости от типа жилья
-  typeSelect.addEventListener('change', function () {
-    for (var x = 0; x < typeSelect.options.length; x++) {
-      var option = typeSelect.options[x];
-      if (option.selected) {
-        if (option.text === 'Лачуга') {
-          priceInput.value = '0';
-          priceInput.setAttribute('min', '0');
-        } else if (option.text === 'Квартира') {
-          priceInput.value = '1000';
-          priceInput.setAttribute('min', '1000');
-        } else if (option.text === 'Дом') {
-          priceInput.value = '5000';
-          priceInput.setAttribute('min', '5000');
-        } else {
-          priceInput.value = '10000';
-          priceInput.setAttribute('min', '10000');
-        }
-      }
-    }
-  });
+  window.synchronizeFields(typeSelect, priceInput, typeSelectOptions, minPrice, syncValueType);
 
-  // Ставит значение количества мест по умолчанию при выборе количества комнат
-  roomsSelect.addEventListener('change', function () {
-    for (var x = 0; x < roomsSelect.options.length; x++) {
-      var option = roomsSelect.options[x];
-      if (option.selected) {
-        if (option.value === '1') {
-          capacitySelect.options[2].selected = true;
-        } else if (option.value === '2') {
-          capacitySelect.options[1].selected = true;
-        } else if (option.value === '3') {
-          capacitySelect.options[0].selected = true;
-        } else {
-          capacitySelect.options[3].selected = true;
-        }
-      }
-    }
-  });
-
-  // Ставит значение количества комнат при изменении количества гостей
-  capacitySelect.addEventListener('change', function () {
-    for (var x = 0; x < capacitySelect.options.length; x++) {
-      var option = capacitySelect.options[x];
-      if (option.selected) {
-        if (option.value === '2' && roomsSelect.value < '2') {
-          roomsSelect.options[1].selected = true;
-        } else if (option.value === '3' && roomsSelect.value < '3') {
-          roomsSelect.options[2].selected = true;
-        } else if (option.value === '0') {
-          roomsSelect.options[3].selected = true;
-        }
-      }
-    }
-  });
+  // Ставит значение количества мест по умолчанию при выборе количества комнат и наоборот
+  window.synchronizeFields(roomsSelect, capacitySelect, roomsSelectOptions, capacitySelectOptions, syncValueRooms);
 
   // Проверка поля адреса на валидность
   addressInput.addEventListener('invalid', function () {
