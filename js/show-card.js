@@ -4,8 +4,6 @@
 
   var ESC_KEYCODE = 27;
 
-  var dialogPanel;
-  var fragmentPanel;
   var offerDialog = document.querySelector('#offer-dialog');
   var dialogClose = offerDialog.querySelector('.dialog__close');
   var pinMap = document.querySelector('.tokyo__pin-map');
@@ -46,6 +44,9 @@
    * @param {Object} object
    */
   function renderActiveDialog(pins, targetImage, object) {
+    var dialogPanel;
+    var fragmentPanel;
+
     for (var x = 0; x < pins.length; x++) {
       if (pins[x].classList.contains('pin--active')) {
         if (pins[x].classList.contains('pin__main')) {

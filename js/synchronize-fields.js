@@ -2,6 +2,14 @@
 
 (function () {
 
+  /**
+   * Связывает поля между собой таким образом, чтобы логика изменения значения зависимого поля находилась в функции обратного вызова
+   * @param {Object} fieldOne
+   * @param {Object} fieldTwo
+   * @param {Array} arrayOne
+   * @param {Array} arrayTwo
+   * @param {function} callback
+   */
   window.synchronizeFields = function (fieldOne, fieldTwo, arrayOne, arrayTwo, callback) {
     fieldOne.addEventListener('change', function () {
       for (var i = 0; i < arrayOne.length; i++) {

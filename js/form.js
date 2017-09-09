@@ -32,20 +32,25 @@
   };
 
   var syncValueRooms = function (element, value) {
+    // если поле содержит подстроку "комнат"
     if (!(~element.text.indexOf('комнат'))) {
-      if (value === '1') {
-        capacitySelect.options[2].selected = true;
-      } else if (value === '2') {
-        capacitySelect.options[1].selected = true;
-      } else if (value === '3') {
-        capacitySelect.options[0].selected = true;
-      } else {
-        capacitySelect.options[3].selected = true;
+      switch (value) {
+        case '1':
+          capacitySelect.options[2].selected = true;
+          break;
+        case '2':
+          capacitySelect.options[1].selected = true;
+          break;
+        case '3':
+          capacitySelect.options[0].selected = true;
+          break;
+        default:
+          capacitySelect.options[3].selected = true;
       }
     } else {
-      if (value === '2' && element.value < '2') {
+      if (value === '2' && +roomsSelect.value < 2) {
         roomsSelect.options[1].selected = true;
-      } else if (value === '3' && element.value < '3') {
+      } else if (value === '3' && +roomsSelect.value < 3) {
         roomsSelect.options[2].selected = true;
       } else if (value === '0') {
         roomsSelect.options[3].selected = true;
