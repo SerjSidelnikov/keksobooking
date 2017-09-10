@@ -34,19 +34,7 @@
   var syncValueRooms = function (element, value) {
     // если поле содержит подстроку "комнат"
     if (!(~element.text.indexOf('комнат'))) {
-      switch (value) {
-        case '1':
-          capacitySelect.options[2].selected = true;
-          break;
-        case '2':
-          capacitySelect.options[1].selected = true;
-          break;
-        case '3':
-          capacitySelect.options[0].selected = true;
-          break;
-        default:
-          capacitySelect.options[3].selected = true;
-      }
+      capacitySelect.options[3 - value].selected = true;
     } else {
       if (value === '2' && +roomsSelect.value < 2) {
         roomsSelect.options[1].selected = true;
