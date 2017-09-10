@@ -4,7 +4,7 @@
 
   var ENTER_KEYCODE = 13;
 
-  var offers = window.data.generateOffers();
+  var offers = [];
   var map = document.querySelector('.tokyo');
   var pinMap = document.querySelector('.tokyo__pin-map');
   var pinMain = pinMap.querySelector('.pin__main');
@@ -15,13 +15,55 @@
   var heightMap = 700;
   var topPointMap = 180;
   var regex = /x: (\d{1,4}), y: (\d{1,3})/;
+  var pins;
+  var form = document.querySelector('.notice__form');
 
-  // Отображаем маркеры на карте
-  var fragment = document.createDocumentFragment();
-  window.pin.makeFragmentPinMap(offers, fragment);
-  pinMap.appendChild(fragment);
+  // элемент отображающий статус ответа с сервера
+  var node = document.createElement('div');
+  node.style.margin = '0 auto';
+  node.style.textAlign = 'center';
+  node.style.color = 'white';
+  node.style.fontSize = '30px';
 
-  var pins = pinMap.querySelectorAll('.pin');
+  /**
+   * Обрабатывает полученные данные с сервера
+   * @param {Object} offer
+   */
+  var successHandler = function (offer) {
+    offers = offer.slice();
+
+    // Отображаем маркеры на карте
+    var fragment = document.createDocumentFragment();
+    window.pin.makeFragmentPinMap(offers, fragment);
+    pinMap.appendChild(fragment);
+
+    pins = pinMap.querySelectorAll('.pin');
+  };
+
+  /**
+   * Выводит сообщение об ошибке при неудачных попытках отправить или получить данные с сервера
+   * @param {string} errorMessage
+   */
+  var errorHandler = function (errorMessage) {
+    node.style.backgroundColor = 'red';
+    node.textContent = errorMessage;
+    document.querySelector('.notice').insertAdjacentElement('afterbegin', node);
+  };
+
+  window.backend.load(successHandler, errorHandler);
+
+  // Отправляем данные формы на сервер, выводим сообщение об успешной отправке и сбрасываем значения формы по умолчанию
+  form.addEventListener('submit', function (event) {
+    window.backend.save(new FormData(form), function () {
+      node.style.backgroundColor = 'green';
+      node.textContent = 'Форма успешно отправлена';
+      document.querySelector('.notice').insertAdjacentElement('afterbegin', node);
+
+      form.reset();
+    }, errorHandler);
+
+    event.preventDefault();
+  });
 
   // отслеживаем click на карте и по event.target определяем на каком элементе произошло событие
   pinMap.addEventListener('click', function () {

@@ -77,10 +77,8 @@
 
   /**
    * Закрывает объявление, удаляет у маркера состояние активности и удаляет обработчики событий на esc и click
-   * @param {Object} event
    */
-  function closeDialog(event) {
-    event.preventDefault();
+  function closeDialog() {
     var pins = pinMap.querySelectorAll('.pin');
 
     offerDialog.classList.add('hidden');
