@@ -33,8 +33,6 @@
 
     for (var j = 0; j < panel.offer.photos.length; j++) {
       var newPhoto = document.createElement('img');
-      newPhoto.setAttribute('width', '52');
-      newPhoto.setAttribute('height', '42');
       newPhoto.setAttribute('alt', 'Lodge photo');
       newPhoto.setAttribute('src', panel.offer.photos[j]);
 

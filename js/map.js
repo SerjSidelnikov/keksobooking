@@ -20,10 +20,7 @@
 
   // элемент отображающий статус ответа с сервера
   var node = document.createElement('div');
-  node.style.margin = '0 auto';
-  node.style.textAlign = 'center';
-  node.style.color = 'white';
-  node.style.fontSize = '30px';
+  node.classList.add('notice__message');
 
   /**
    * Обрабатывает полученные данные с сервера
@@ -45,7 +42,7 @@
    * @param {string} errorMessage
    */
   var errorHandler = function (errorMessage) {
-    node.style.backgroundColor = 'red';
+    node.classList.add('notice__message--error');
     node.textContent = errorMessage;
     document.querySelector('.notice').insertAdjacentElement('afterbegin', node);
   };
@@ -55,7 +52,7 @@
   // Отправляем данные формы на сервер, выводим сообщение об успешной отправке и сбрасываем значения формы по умолчанию
   form.addEventListener('submit', function (event) {
     window.backend.save(new FormData(form), function () {
-      node.style.backgroundColor = 'green';
+      node.classList.add('notice__message--success');
       node.textContent = 'Форма успешно отправлена';
       document.querySelector('.notice').insertAdjacentElement('afterbegin', node);
 
