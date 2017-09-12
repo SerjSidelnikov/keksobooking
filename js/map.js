@@ -19,6 +19,7 @@
   var form = document.querySelector('.notice__form');
   var formFilter = document.querySelector('.tokyo__filters');
   var elem = formFilter.elements;
+  var sameHousingType;
 
   // элемент отображающий статус ответа с сервера
   var node = document.createElement('div');
@@ -30,6 +31,7 @@
    */
   var successHandler = function (data) {
     offers = data.slice();
+    sameHousingType = offers.slice();
     renderPins(offers);
   };
 
@@ -62,7 +64,24 @@
 
   window.backend.load(successHandler, errorHandler);
 
-  var sameHousingType = [];
+  // Фильтр по типу жилья
+  var housingType = elem['housing_type'];
+  var checkedHousingType = housingType.value;
+  housingType.addEventListener('change', function () {
+    Array.prototype.forEach.call(housingType.options, function (it) {
+      if (it.selected) {
+        if (it.value === 'any') {
+          sameHousingType = offers;
+          renderPins(sameHousingType);
+        } else {
+          checkedHousingType = it.value;
+          updateOffers();
+        }
+      }
+    });
+  });
+
+  // Обновление массива offers
   function updateOffers() {
     sameHousingType = offers.filter(function (it) {
       return it.offer.type === checkedHousingType;
@@ -71,49 +90,10 @@
     renderPins(sameHousingType);
   }
 
-  var housingType = elem['housing_type'];
   // var housingPrice = elem['housing_price'];
   // var housingRoomNumber = elem['housing_room-number'];
   // var housingGuestsNumber = elem['housing_guests-number'];
   // var housingFeatures = elem['feature'];
-
-  var checkedHousingType = housingType.value;
-  housingType.addEventListener('change', function () {
-    Array.prototype.forEach.call(housingType.options, function (it) {
-      if (it.selected) {
-        checkedHousingType = it.value;
-        updateOffers();
-      }
-    });
-  });
-
-  // var checkedHousingPrice;
-  // Array.prototype.forEach.call(housingPrice.options, function (it) {
-  //   if (it.selected) {
-  //     checkedHousingPrice = it;
-  //   }
-  // });
-  //
-  // var checkedHousingRoomNumber;
-  // Array.prototype.forEach.call(housingRoomNumber.options, function (it) {
-  //   if (it.selected) {
-  //     checkedHousingRoomNumber = it;
-  //   }
-  // });
-  //
-  // var checkedHousingGuestsNumber;
-  // Array.prototype.forEach.call(housingGuestsNumber.options, function (it) {
-  //   if (it.selected) {
-  //     checkedHousingGuestsNumber = it;
-  //   }
-  // });
-
-  // var checkedHousingFeatures;
-  // Array.prototype.forEach.call(housingFeatures.options, function (it) {
-  //   if (it.selected) {
-  //     checkedHousingFeatures = it;
-  //   }
-  // });
 
   // Отправляем данные формы на сервер, выводим сообщение об успешной отправке и сбрасываем значения формы по умолчанию
   form.addEventListener('submit', function (event) {
