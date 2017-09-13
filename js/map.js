@@ -115,10 +115,12 @@
   // Обновление массива offers
   function updateOffers() {
     sameOffers = offers.filter(function (it) {
-      return it.offer.type === checkedHousingType;
-    });
-
-    sameOffers = offers.filter(function (it) {
+      if (checkedHousingType === 'any') {
+        return true;
+      } else {
+        return it.offer.type === checkedHousingType;
+      }
+    }).filter(function (it) {
       if (checkedHousingPrice === 'middle') {
         return it.offer.price >= 10000 && it.offer.price <= 50000;
       } else if (checkedHousingPrice === 'low') {
@@ -128,9 +130,7 @@
       } else {
         return it.offer.price > 0;
       }
-    });
-
-    sameOffers = offers.filter(function (it) {
+    }).filter(function (it) {
       if (checkedRoomNumber === '1') {
         return it.offer.rooms === 1;
       } else if (checkedRoomNumber === '2') {
@@ -140,9 +140,7 @@
       } else {
         return it.offer.rooms > 0;
       }
-    });
-
-    sameOffers = offers.filter(function (it) {
+    }).filter(function (it) {
       if (checkedGuestsNumber === '1') {
         return it.offer.guests === 1;
       } else if (checkedGuestsNumber === '2') {
@@ -150,12 +148,14 @@
       } else {
         return it.offer.guests > 0;
       }
-    });
-
-    sameOffers = offers.filter(function (it) {
-      return checkedFeatures.some(function (item) {
-        return ~it.offer.features.indexOf(item.value);
-      });
+    }).filter(function (it) {
+      if (checkedFeatures.length === 0) {
+        return true;
+      } else {
+        return checkedFeatures.some(function (item) {
+          return ~it.offer.features.indexOf(item.value);
+        });
+      }
     });
 
     renderPins(sameOffers);
