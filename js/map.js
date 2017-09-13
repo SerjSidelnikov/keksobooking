@@ -78,28 +78,42 @@
     return it.checked;
   });
 
+  var DEBOUNCE_INTERVAL = 500; // ms
+
+  var lastTimeout;
+  /**
+   * Функция устранения "дребезга"
+   * @param {function} fun
+   */
+  var debounce = function (fun) {
+    if (lastTimeout) {
+      clearTimeout(lastTimeout);
+    }
+    lastTimeout = setTimeout(fun, DEBOUNCE_INTERVAL);
+  };
+
   // Фильтр по типу жилья
   housingType.addEventListener('change', function () {
     checkedHousingType = housingType.value;
-    updateOffers();
+    debounce(updateOffers);
   });
 
   // Фильтр по цене
   housingPrice.addEventListener('change', function () {
     checkedHousingPrice = housingPrice.value;
-    updateOffers();
+    debounce(updateOffers);
   });
 
   // Фильтр по количеству комнат
   housingRoomNumber.addEventListener('change', function () {
     checkedRoomNumber = housingRoomNumber.value;
-    updateOffers();
+    debounce(updateOffers);
   });
 
   // Фильтр по количеству гостей
   housingGuestsNumber.addEventListener('change', function () {
     checkedGuestsNumber = housingGuestsNumber.value;
-    updateOffers();
+    debounce(updateOffers);
   });
 
   // Фильтр по features
@@ -108,11 +122,13 @@
       checkedFeatures = Array.prototype.filter.call(housingFeatures, function (iterator) {
         return iterator.checked;
       });
-      updateOffers();
+      debounce(updateOffers);
     });
   });
 
-  // Обновление массива offers
+  /**
+   * Обновление массива offers
+   */
   function updateOffers() {
     sameOffers = offers.filter(function (it) {
       if (checkedHousingType === 'any') {
