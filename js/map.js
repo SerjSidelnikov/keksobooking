@@ -19,7 +19,7 @@
   var form = document.querySelector('.notice__form');
   var formFilter = document.querySelector('.tokyo__filters');
   var elem = formFilter.elements;
-  var sameHousingType;
+  var sameOffers;
 
   // элемент отображающий статус ответа с сервера
   var node = document.createElement('div');
@@ -31,7 +31,7 @@
    */
   var successHandler = function (data) {
     offers = data.slice();
-    sameHousingType = offers.slice();
+    sameOffers = offers;
     renderPins(offers);
   };
 
@@ -64,36 +64,102 @@
 
   window.backend.load(successHandler, errorHandler);
 
-  // Фильтр по типу жилья
   var housingType = elem['housing_type'];
+  var housingPrice = elem['housing_price'];
+  var housingRoomNumber = elem['housing_room-number'];
+  var housingGuestsNumber = elem['housing_guests-number'];
+  var housingFeatures = document.querySelector('.tokyo__filter-set').elements;
+
   var checkedHousingType = housingType.value;
+  var checkedHousingPrice = housingPrice.value;
+  var checkedRoomNumber = housingRoomNumber.value;
+  var checkedGuestsNumber = housingGuestsNumber.value;
+  var checkedFeatures = Array.prototype.filter.call(housingFeatures, function (it) {
+    return it.checked;
+  });
+
+  // Фильтр по типу жилья
   housingType.addEventListener('change', function () {
-    Array.prototype.forEach.call(housingType.options, function (it) {
-      if (it.selected) {
-        if (it.value === 'any') {
-          sameHousingType = offers;
-          renderPins(sameHousingType);
-        } else {
-          checkedHousingType = it.value;
-          updateOffers();
-        }
-      }
+    checkedHousingType = housingType.value;
+    updateOffers();
+  });
+
+  // Фильтр по цене
+  housingPrice.addEventListener('change', function () {
+    checkedHousingPrice = housingPrice.value;
+    updateOffers();
+  });
+
+  // Фильтр по количеству комнат
+  housingRoomNumber.addEventListener('change', function () {
+    checkedRoomNumber = housingRoomNumber.value;
+    updateOffers();
+  });
+
+  // Фильтр по количеству гостей
+  housingGuestsNumber.addEventListener('change', function () {
+    checkedGuestsNumber = housingGuestsNumber.value;
+    updateOffers();
+  });
+
+  // Фильтр по features
+  Array.prototype.forEach.call(housingFeatures, function (it) {
+    it.addEventListener('change', function () {
+      checkedFeatures = Array.prototype.filter.call(housingFeatures, function (iterator) {
+        return iterator.checked;
+      });
+      updateOffers();
     });
   });
 
   // Обновление массива offers
   function updateOffers() {
-    sameHousingType = offers.filter(function (it) {
+    sameOffers = offers.filter(function (it) {
       return it.offer.type === checkedHousingType;
     });
 
-    renderPins(sameHousingType);
-  }
+    sameOffers = offers.filter(function (it) {
+      if (checkedHousingPrice === 'middle') {
+        return it.offer.price >= 10000 && it.offer.price <= 50000;
+      } else if (checkedHousingPrice === 'low') {
+        return it.offer.price >= 0 && it.offer.price < 10000;
+      } else if (checkedHousingPrice === 'high') {
+        return it.offer.price > 50000;
+      } else {
+        return it.offer.price > 0;
+      }
+    });
 
-  // var housingPrice = elem['housing_price'];
-  // var housingRoomNumber = elem['housing_room-number'];
-  // var housingGuestsNumber = elem['housing_guests-number'];
-  // var housingFeatures = elem['feature'];
+    sameOffers = offers.filter(function (it) {
+      if (checkedRoomNumber === '1') {
+        return it.offer.rooms === 1;
+      } else if (checkedRoomNumber === '2') {
+        return it.offer.rooms === 2;
+      } else if (checkedRoomNumber === '3') {
+        return it.offer.rooms === 3;
+      } else {
+        return it.offer.rooms > 0;
+      }
+    });
+
+    sameOffers = offers.filter(function (it) {
+      if (checkedGuestsNumber === '1') {
+        return it.offer.guests === 1;
+      } else if (checkedGuestsNumber === '2') {
+        return it.offer.guests === 2;
+      } else {
+        return it.offer.guests > 0;
+      }
+    });
+
+    sameOffers = offers.filter(function (it) {
+      return checkedFeatures.some(function (item) {
+        return ~it.offer.features.indexOf(item.value);
+      });
+    });
+
+    renderPins(sameOffers);
+  }
 
   // Отправляем данные формы на сервер, выводим сообщение об успешной отправке и сбрасываем значения формы по умолчанию
   form.addEventListener('submit', function (event) {
@@ -110,7 +176,7 @@
 
   // отслеживаем click на карте и по event.target определяем на каком элементе произошло событие
   pinMap.addEventListener('click', function () {
-    window.showCard(event, pins, sameHousingType);
+    window.showCard(event, pins, sameOffers);
   });
   pinMap.addEventListener('keydown', onDialogEnterPress);
 
