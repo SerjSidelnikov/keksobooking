@@ -17,45 +17,170 @@
   var regex = /x: (\d{1,4}), y: (\d{1,3})/;
   var pins;
   var form = document.querySelector('.notice__form');
+  var formFilter = document.querySelector('.tokyo__filters');
+  var elem = formFilter.elements;
+  var sameOffers;
 
   // элемент отображающий статус ответа с сервера
   var node = document.createElement('div');
-  node.style.margin = '0 auto';
-  node.style.textAlign = 'center';
-  node.style.color = 'white';
-  node.style.fontSize = '30px';
+  node.classList.add('notice__message');
 
   /**
    * Обрабатывает полученные данные с сервера
-   * @param {Object} offer
+   * @param {Object} data
    */
-  var successHandler = function (offer) {
-    offers = offer.slice();
+  var successHandler = function (data) {
+    offers = data.slice();
+    sameOffers = offers;
+    renderPins(offers);
+  };
 
-    // Отображаем маркеры на карте
+  /**
+   * Отображает маркеры на карте
+   * @param {Object} data
+   */
+  function renderPins(data) {
     var fragment = document.createDocumentFragment();
-    window.pin.makeFragmentPinMap(offers, fragment);
+    window.pin.makeFragmentPinMap(data, fragment);
+
+    while (pinMap.children.length > 1) {
+      pinMap.removeChild(pinMap.lastChild);
+    }
+
     pinMap.appendChild(fragment);
 
     pins = pinMap.querySelectorAll('.pin');
-  };
+  }
 
   /**
    * Выводит сообщение об ошибке при неудачных попытках отправить или получить данные с сервера
    * @param {string} errorMessage
    */
   var errorHandler = function (errorMessage) {
-    node.style.backgroundColor = 'red';
+    node.classList.add('notice__message--error');
     node.textContent = errorMessage;
     document.querySelector('.notice').insertAdjacentElement('afterbegin', node);
   };
 
   window.backend.load(successHandler, errorHandler);
 
+  var housingType = elem['housing_type'];
+  var housingPrice = elem['housing_price'];
+  var housingRoomNumber = elem['housing_room-number'];
+  var housingGuestsNumber = elem['housing_guests-number'];
+  var housingFeatures = document.querySelector('.tokyo__filter-set').elements;
+
+  var checkedHousingType = housingType.value;
+  var checkedHousingPrice = housingPrice.value;
+  var checkedRoomNumber = housingRoomNumber.value;
+  var checkedGuestsNumber = housingGuestsNumber.value;
+  var checkedFeatures = Array.prototype.filter.call(housingFeatures, function (it) {
+    return it.checked;
+  });
+
+  var DEBOUNCE_INTERVAL = 500; // ms
+
+  var lastTimeout;
+  /**
+   * Функция устранения "дребезга"
+   * @param {function} fun
+   */
+  var debounce = function (fun) {
+    if (lastTimeout) {
+      clearTimeout(lastTimeout);
+    }
+    lastTimeout = setTimeout(fun, DEBOUNCE_INTERVAL);
+  };
+
+  // Фильтр по типу жилья
+  housingType.addEventListener('change', function () {
+    checkedHousingType = housingType.value;
+    debounce(updateOffers);
+  });
+
+  // Фильтр по цене
+  housingPrice.addEventListener('change', function () {
+    checkedHousingPrice = housingPrice.value;
+    debounce(updateOffers);
+  });
+
+  // Фильтр по количеству комнат
+  housingRoomNumber.addEventListener('change', function () {
+    checkedRoomNumber = housingRoomNumber.value;
+    debounce(updateOffers);
+  });
+
+  // Фильтр по количеству гостей
+  housingGuestsNumber.addEventListener('change', function () {
+    checkedGuestsNumber = housingGuestsNumber.value;
+    debounce(updateOffers);
+  });
+
+  // Фильтр по features
+  Array.prototype.forEach.call(housingFeatures, function (it) {
+    it.addEventListener('change', function () {
+      checkedFeatures = Array.prototype.filter.call(housingFeatures, function (iterator) {
+        return iterator.checked;
+      });
+      debounce(updateOffers);
+    });
+  });
+
+  /**
+   * Обновление массива offers
+   */
+  function updateOffers() {
+    sameOffers = offers.filter(function (it) {
+      if (checkedHousingType === 'any') {
+        return true;
+      } else {
+        return it.offer.type === checkedHousingType;
+      }
+    }).filter(function (it) {
+      if (checkedHousingPrice === 'middle') {
+        return it.offer.price >= 10000 && it.offer.price <= 50000;
+      } else if (checkedHousingPrice === 'low') {
+        return it.offer.price >= 0 && it.offer.price < 10000;
+      } else if (checkedHousingPrice === 'high') {
+        return it.offer.price > 50000;
+      } else {
+        return it.offer.price > 0;
+      }
+    }).filter(function (it) {
+      if (checkedRoomNumber === '1') {
+        return it.offer.rooms === 1;
+      } else if (checkedRoomNumber === '2') {
+        return it.offer.rooms === 2;
+      } else if (checkedRoomNumber === '3') {
+        return it.offer.rooms === 3;
+      } else {
+        return it.offer.rooms > 0;
+      }
+    }).filter(function (it) {
+      if (checkedGuestsNumber === '1') {
+        return it.offer.guests === 1;
+      } else if (checkedGuestsNumber === '2') {
+        return it.offer.guests === 2;
+      } else {
+        return it.offer.guests > 0;
+      }
+    }).filter(function (it) {
+      if (checkedFeatures.length === 0) {
+        return true;
+      } else {
+        return checkedFeatures.some(function (item) {
+          return ~it.offer.features.indexOf(item.value);
+        });
+      }
+    });
+
+    renderPins(sameOffers);
+  }
+
   // Отправляем данные формы на сервер, выводим сообщение об успешной отправке и сбрасываем значения формы по умолчанию
   form.addEventListener('submit', function (event) {
     window.backend.save(new FormData(form), function () {
-      node.style.backgroundColor = 'green';
+      node.classList.add('notice__message--success');
       node.textContent = 'Форма успешно отправлена';
       document.querySelector('.notice').insertAdjacentElement('afterbegin', node);
 
@@ -67,7 +192,7 @@
 
   // отслеживаем click на карте и по event.target определяем на каком элементе произошло событие
   pinMap.addEventListener('click', function () {
-    window.showCard(event, pins, offers);
+    window.showCard(event, pins, sameOffers);
   });
   pinMap.addEventListener('keydown', onDialogEnterPress);
 

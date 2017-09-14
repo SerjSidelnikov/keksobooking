@@ -316,6 +316,22 @@ select option:hover {
     margin: 0 auto;
 }
 
+.notice__message {
+  margin: 0 auto;
+  font-size: 30px;
+  line-height: 32px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.notice__message--error {
+  background-color: red;
+}
+
+.notice__message--success {
+  background-color: green;
+}
+
 .notice__title {
     font-family: Roboto, serif;
     font-weight: bold;
@@ -624,6 +640,8 @@ select option:hover {
 
 .lodge__photos img {
   margin: 0 1px;
+  width: 52px;
+  height: 42px;
 }
 
 .pin {
