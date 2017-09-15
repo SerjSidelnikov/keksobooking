@@ -41,7 +41,7 @@
 
     panelElement.querySelector('.lodge__title').textContent = panel.offer.title;
     panelElement.querySelector('.lodge__address').textContent = panel.offer.address;
-    panelElement.querySelector('.lodge__price').innerHTML = panel.offer.price + '&#x20bd;/ночь';
+    panelElement.querySelector('.lodge__price').textContent = panel.offer.price + '₽/ночь';
     panelElement.querySelector('.lodge__type').textContent = typeLodging;
     panelElement.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + panel.offer.guests + ' гостей в ' + panel.offer.rooms + ' комнатах';
     panelElement.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + panel.offer.checkin + ', выезд до ' + panel.offer.checkout;
