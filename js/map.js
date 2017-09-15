@@ -296,6 +296,9 @@
       y: event.clientY
     };
 
+    pinMain.style.left = pinMain.offsetLeft + 'px';
+    pinMain.style.top = pinMain.offsetTop + 'px';
+
     var onMouseMove = function (moveEvent) {
       moveEvent.preventDefault();
 
