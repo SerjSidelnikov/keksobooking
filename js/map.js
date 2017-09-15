@@ -33,7 +33,7 @@
   var successHandler = function (data) {
     offers = data.slice();
     sameOffers = offers;
-    renderPins(offers);
+    renderPins(offers.slice(0, 3));
   };
 
   /**
