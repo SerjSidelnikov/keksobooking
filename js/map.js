@@ -3,6 +3,7 @@
 (function () {
 
   var ENTER_KEYCODE = 13;
+  var DEBOUNCE_INTERVAL = 500; // ms
 
   var offers = [];
   var map = document.querySelector('.tokyo');
@@ -78,8 +79,6 @@
     return it.checked;
   });
 
-  var DEBOUNCE_INTERVAL = 500; // ms
-
   var lastTimeout;
   /**
    * Функция устранения "дребезга"
@@ -92,31 +91,31 @@
     lastTimeout = setTimeout(fun, DEBOUNCE_INTERVAL);
   };
 
-  // Фильтр по типу жилья
+  // Отслеживаем изменения фильтра по типу жилья
   housingType.addEventListener('change', function () {
     checkedHousingType = housingType.value;
     debounce(updateOffers);
   });
 
-  // Фильтр по цене
+  // Отслеживаем изменение фильтра по цене
   housingPrice.addEventListener('change', function () {
     checkedHousingPrice = housingPrice.value;
     debounce(updateOffers);
   });
 
-  // Фильтр по количеству комнат
+  // Отслеживаем изменения фильтра по количеству комнат
   housingRoomNumber.addEventListener('change', function () {
     checkedRoomNumber = housingRoomNumber.value;
     debounce(updateOffers);
   });
 
-  // Фильтр по количеству гостей
+  // Отслеживаем изменение фильтра по количеству гостей
   housingGuestsNumber.addEventListener('change', function () {
     checkedGuestsNumber = housingGuestsNumber.value;
     debounce(updateOffers);
   });
 
-  // Фильтр по features
+  // Отслеживаем изменение фильтра по features
   Array.prototype.forEach.call(housingFeatures, function (it) {
     it.addEventListener('change', function () {
       checkedFeatures = Array.prototype.filter.call(housingFeatures, function (iterator) {
@@ -127,54 +126,93 @@
   });
 
   /**
-   * Обновление массива offers
+   * Обновление массива offers при изменении фильтров
    */
   function updateOffers() {
-    sameOffers = offers.filter(function (it) {
-      if (checkedHousingType === 'any') {
-        return true;
-      } else {
-        return it.offer.type === checkedHousingType;
-      }
-    }).filter(function (it) {
-      if (checkedHousingPrice === 'middle') {
-        return it.offer.price >= 10000 && it.offer.price <= 50000;
-      } else if (checkedHousingPrice === 'low') {
-        return it.offer.price >= 0 && it.offer.price < 10000;
-      } else if (checkedHousingPrice === 'high') {
-        return it.offer.price > 50000;
-      } else {
-        return it.offer.price > 0;
-      }
-    }).filter(function (it) {
-      if (checkedRoomNumber === '1') {
-        return it.offer.rooms === 1;
-      } else if (checkedRoomNumber === '2') {
-        return it.offer.rooms === 2;
-      } else if (checkedRoomNumber === '3') {
-        return it.offer.rooms === 3;
-      } else {
-        return it.offer.rooms > 0;
-      }
-    }).filter(function (it) {
-      if (checkedGuestsNumber === '1') {
-        return it.offer.guests === 1;
-      } else if (checkedGuestsNumber === '2') {
-        return it.offer.guests === 2;
-      } else {
-        return it.offer.guests > 0;
-      }
-    }).filter(function (it) {
-      if (checkedFeatures.length === 0) {
-        return true;
-      } else {
-        return checkedFeatures.some(function (item) {
-          return ~it.offer.features.indexOf(item.value);
-        });
-      }
-    });
+    sameOffers = offers.filter(updateCheckedHousingType)
+        .filter(updateCheckedHousingPrice)
+        .filter(updateCheckedRoomNumber)
+        .filter(updateCheckedGuestsNumber)
+        .filter(updateCheckedFeatures);
 
     renderPins(sameOffers);
+  }
+
+  /**
+   * Фильтр объявлений по типу жилья
+   * @param {Object} it
+   * @return {boolean}
+   */
+  function updateCheckedHousingType(it) {
+    if (checkedHousingType === 'any') {
+      return true;
+    } else {
+      return it.offer.type === checkedHousingType;
+    }
+  }
+
+  /**
+   * Фильтр объявлений по цене
+   * @param {Object} it
+   * @return {boolean}
+   */
+  function updateCheckedHousingPrice(it) {
+    if (checkedHousingPrice === 'middle') {
+      return it.offer.price >= 10000 && it.offer.price <= 50000;
+    } else if (checkedHousingPrice === 'low') {
+      return it.offer.price >= 0 && it.offer.price < 10000;
+    } else if (checkedHousingPrice === 'high') {
+      return it.offer.price > 50000;
+    } else {
+      return it.offer.price > 0;
+    }
+  }
+
+  /**
+   * Фильтр объявлений по количеству комнат
+   * @param {Object} it
+   * @return {boolean}
+   */
+  function updateCheckedRoomNumber(it) {
+    if (parseInt(checkedRoomNumber, 10) === 1) {
+      return it.offer.rooms === 1;
+    } else if (parseInt(checkedRoomNumber, 10) === 2) {
+      return it.offer.rooms === 2;
+    } else if (parseInt(checkedRoomNumber, 10) === 3) {
+      return it.offer.rooms === 3;
+    } else {
+      return it.offer.rooms > 0;
+    }
+  }
+
+  /**
+   * Фильтр объявлений по количеству гостей
+   * @param {Object} it
+   * @return {boolean}
+   */
+  function updateCheckedGuestsNumber(it) {
+    if (parseInt(checkedGuestsNumber, 10) === 1) {
+      return it.offer.guests === 1;
+    } else if (parseInt(checkedGuestsNumber, 10) === 2) {
+      return it.offer.guests === 2;
+    } else {
+      return it.offer.guests > 0;
+    }
+  }
+
+  /**
+   * Фильтр объявлений по features
+   * @param {Object} it
+   * @return {boolean}
+   */
+  function updateCheckedFeatures(it) {
+    if (checkedFeatures.length === 0) {
+      return true;
+    } else {
+      return checkedFeatures.some(function (item) {
+        return it.offer.features.indexOf(item.value) !== -1;
+      });
+    }
   }
 
   // Отправляем данные формы на сервер, выводим сообщение об успешной отправке и сбрасываем значения формы по умолчанию
