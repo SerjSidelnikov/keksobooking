@@ -229,7 +229,7 @@
   });
 
   // отслеживаем click на карте и по event.target определяем на каком элементе произошло событие
-  pinMap.addEventListener('click', function () {
+  pinMap.addEventListener('click', function (event) {
     window.showCard(event, pins, sameOffers);
   });
   pinMap.addEventListener('keydown', onDialogEnterPress);
