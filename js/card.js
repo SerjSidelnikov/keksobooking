@@ -8,7 +8,7 @@
    * @return {Object}
    */
   function renderDialogPanel(panel) {
-    var dialogPanelTemplate = document.getElementById('lodge-template').content;
+    var dialogPanelTemplate = document.querySelector('#lodge-template').content;
     var panelElement = dialogPanelTemplate.cloneNode(true);
     var typeLodging;
 

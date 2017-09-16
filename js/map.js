@@ -9,7 +9,7 @@
   var map = document.querySelector('.tokyo');
   var pinMap = document.querySelector('.tokyo__pin-map');
   var pinMain = pinMap.querySelector('.pin__main');
-  var addressInput = document.getElementById('address');
+  var addressInput = document.querySelector('#address');
   var widthPinMain = 76;
   var heightPinMain = 94;
   var widthMap = 1200;
