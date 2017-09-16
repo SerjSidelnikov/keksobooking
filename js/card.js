@@ -2,13 +2,14 @@
 
 (function () {
 
+  var dialogPanelTemplate = document.querySelector('#lodge-template').content;
+
   /**
    * Создаёт элемент с описанием объявления
    * @param {Object} panel
    * @return {Object}
    */
   function renderDialogPanel(panel) {
-    var dialogPanelTemplate = document.querySelector('#lodge-template').content;
     var panelElement = dialogPanelTemplate.cloneNode(true);
     var typeLodging;
 
